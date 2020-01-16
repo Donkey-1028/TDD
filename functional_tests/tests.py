@@ -78,7 +78,7 @@ class NewVisitorTest(LiveServerTestCase):
 
         # 프란시스가 전용 URL 을 취득한다
         francis_list_url = self.browser.current_url
-        self.assertRegex(francis_list_url, '/list/.+')
+        self.assertRegex(francis_list_url, '/lists/.+')
         self.assertNotEqual(francis_list_url, edith_list_url)
 
         # 에디스가 입력한 흔적이 없다는것을 다시 확인한다
