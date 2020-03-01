@@ -1,15 +1,15 @@
-from django.test import LiveServerTestCase
+from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 
-
-class NewVisitorTest(LiveServerTestCase):
+class NewVisitorTest(StaticLiveServerTestCase):
 
     def setUp(self):
         self.browser = webdriver.Chrome('C:/chromedriver.exe')
         self.browser.implicitly_wait(3)
 
     def tearDown(self):
+        self.browser.refresh()
         self.browser.quit()
 
     def check_for_row_in_list_table(self, row_text):
@@ -25,13 +25,13 @@ class NewVisitorTest(LiveServerTestCase):
         # 웹 페이지 타이틀과 헤더가 'To-Do' 를 표시하고 있따
         self.assertIn('To-Do lists', self.browser.title)
         header_test = self.browser.find_element_by_tag_name('h1').text
-        self.assertIn('To-Do', header_test)
+        self.assertIn('작업 목록 시작', header_test)
 
         # 그녀는 바로 작업을 추가하기로 한다
         inputbox = self.browser.find_element_by_id('id_new_item')
         self.assertEqual(
             inputbox.get_attribute('placeholder'),
-            "작업 아이템 입력"
+            "Enter a to-do item"
         )
 
         # "공작깃털 사기"라고 텍스트 상자에 입력한다
@@ -87,3 +87,16 @@ class NewVisitorTest(LiveServerTestCase):
 
         # 둘 다 만족하고 잠자리에 든다
 
+    def test_layout_and_styling(self):
+        # 에디스는 메인 페이지를 방문한다
+        self.browser.get(self.live_server_url)
+        self.browser.set_window_position(0, 0)
+        self.browser.set_window_size(1024, 768)
+
+        # 그녀는 입력 상자가 가운데 배치된 것을 본다
+        inputbox = self.browser.find_element_by_id('id_new_item')
+        self.assertAlmostEqual(
+            inputbox.location['x'] + inputbox.size['width'] / 2,
+            256,
+            delta=10
+        )
