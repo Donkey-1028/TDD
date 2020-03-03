@@ -53,7 +53,7 @@ class NewVisitorTest(FunctionalTest):
 
         # 프란시스가 홈페이지에 접속한다
         # 에디스의 리스트는 보이지 않는다
-        self.browser.get(self.live_server_url)
+        self.browser.get(self.server_url)
         page_text = self.browser.find_element_by_tag_name('body').text
         self.assertNotIn('공작깃털 사기', page_text)
         self.assertNotIn('그물 만들기', page_text)
