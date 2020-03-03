@@ -8,7 +8,7 @@ class List(models.Model):
 
 
 class Item(models.Model):
-    text = models.TextField(default='')
+    text = models.TextField(blank=False, null=False)
     list = models.ForeignKey(List, default=None, on_delete=models.CASCADE)
 
 
