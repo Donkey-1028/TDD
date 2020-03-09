@@ -20,7 +20,7 @@ class NewVisitorTest(FunctionalTest):
         inputbox = self.get_item_input_box()
         self.assertEqual(
             inputbox.get_attribute('placeholder'),
-            "Enter a to-do item"
+            "작업 아이템 입력"
         )
 
         # "공작깃털 사기"라고 텍스트 상자에 입력한다
