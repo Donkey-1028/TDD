@@ -8,11 +8,13 @@ from django.utils.html import escape
 
 from ..views import home_page
 from ..models import Item, List
+from .. forms import ItemForm
 
 # Create your tests here.
 
 
 class HomePageTest(TestCase):
+    maxDiff = None
 
     def remove_csrftoken(self, objects):
         """
@@ -22,18 +24,23 @@ class HomePageTest(TestCase):
         csrf_token = r'<input[^>]+csrfmiddlewaretoken[^>]+>'
         return re.sub(csrf_token, '', objects)
 
-    def test_root_url_resolves_to_home_page_view(self):
-        found = resolve('/')
-        self.assertEqual(found.func, home_page)
-
     def test_home_page_returns_correct_html(self):
+        # csrf_token 때문에 테스트 통과실패.
+        # csrf_token 제거후 비교
         request = HttpRequest()
         response = home_page(request)
+        response = self.remove_csrftoken(response.content.decode())  # 토큰 제거
+        expected_html = render_to_string('home.html', {'form': ItemForm()})
+        expected_html = self.remove_csrftoken(expected_html)  # 토큰 제거
+        self.assertMultiLineEqual(response, expected_html)
 
-        expected_html = self.remove_csrftoken(render_to_string('home.html', request=request))
-        response_decode = self.remove_csrftoken(response.content.decode())
+    def test_home_page_renders_home_template(self):
+        response = self.client.get('/')
+        self.assertTemplateUsed(response, 'home.html')
 
-        self.assertEqual(response_decode, expected_html)
+    def test_home_page_uses_item_form(self):
+        response = self.client.get('/')
+        self.assertIsInstance(response.context['form'], ItemForm)
 
 
 class ListViewTest(TestCase):
